@@ -11,7 +11,7 @@ class AIConfig:
     """Configuration for AI/LLM settings"""
     def __init__(self):
         self.google_api_key = os.getenv('GOOGLE_API_KEY')
-        self.model_name = 'gemini-1.5-flash'
+        self.model_name = 'gemma-3n-e2b-it'
         
         if not self.google_api_key:
             raise ValueError("GOOGLE_API_KEY not found in environment variables")
@@ -102,8 +102,8 @@ Focus on the work done, impact created, and any notable patterns or insights.
 def main():
     """Main function to run the standup analyzer"""
     # Configuration - you can modify these or make them command line arguments
-    REPO_OWNER = 'Owner of the Repo'
-    REPO_NAME = 'Name of the Repo'
+    REPO_OWNER = 'manas-1110'
+    REPO_NAME = 'Auto-Stand-Up-agent'
     TARGET_USER = 'manas-1110'
     ANALYSIS_DAYS = 7
     
