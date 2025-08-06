@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Auto Stand-Up Report Generator</title>
+        <link
+            rel="stylesheet"
+            href="{{ url_for('static', filename='css/style.css') }}"
+        />
+        <link
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            rel="stylesheet"
+        />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
+    </head>
+    <body>
+        <!-- Header -->
+        <header class="header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="logo">
+                        <i class="fas fa-chart-line"></i>
+                        <h1>Auto Stand-Up Generator</h1>
+                    </div>
+                    <div class="status-indicator">
+                        <span class="status-dot" id="statusDot"></span>
+                        <span class="status-text" id="statusText"
+                            >Checking status...</span
+                        >
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main">
+            <div class="container">
+                <!-- Hero Section -->
+                <section class="hero">
+                    <div class="hero-content">
+                        <h2>Generate AI-Powered Stand-Up Reports</h2>
+                        <p>
+                            Analyze GitHub activity and automatically generate
+                            professional stand-up reports using advanced AI
+                            analysis.
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Configuration Form -->
+                <section class="form-section">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fab fa-github"></i> Repository
+                                Configuration
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <form id="reportForm" class="report-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="repoOwner"
+                                            >Repository Owner</label
+                                        >
+                                        <input
+                                            type="text"
+                                            id="repoOwner"
+                                            name="repo_owner"
+                                            placeholder="e.g., microsoft"
+                                            required
+                                        />
+                                        <small class="form-help"
+                                            >GitHub username or organization
+                                            name</small
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="repoName"
+                                            >Repository Name</label
+                                        >
+                                        <input
+                                            type="text"
+                                            id="repoName"
+                                            name="repo_name"
+                                            placeholder="e.g., vscode"
+                                            required
+                                        />
+                                        <small class="form-help"
+                                            >Repository name
+                                            (case-sensitive)</small
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="username"
+                                            >Username to Analyze</label
+                                        >
+                                        <input
+                                            type="text"
+                                            id="username"
+                                            name="username"
+                                            placeholder="e.g., john-doe"
+                                            required
+                                        />
+                                        <small class="form-help"
+                                            >GitHub username for activity
+                                            analysis</small
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="days"
+                                            >Analysis Period (Days)</label
+                                        >
+                                        <select id="days" name="days" required>
+                                            <option value="1">
+                                                Last 1 day
+                                            </option>
+                                            <option value="3">
+                                                Last 3 days
+                                            </option>
+                                            <option value="7" selected>
+                                                Last 7 days
+                                            </option>
+                                            <option value="14">
+                                                Last 14 days
+                                            </option>
+                                            <option value="30">
+                                                Last 30 days
+                                            </option>
+                                        </select>
+                                        <small class="form-help"
+                                            >Time period for activity
+                                            analysis</small
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="form-actions">
+                                    <button
+                                        type="button"
+                                        id="validateBtn"
+                                        class="btn btn-secondary"
+                                    >
+                                        <i class="fas fa-check-circle"></i>
+                                        Validate Repository
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        id="generateBtn"
+                                        class="btn btn-primary"
+                                    >
+                                        <i class="fas fa-magic"></i>
+                                        Generate Report
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Repository Info -->
+                <section class="repo-info" id="repoInfo" style="display: none">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-info-circle"></i> Repository
+                                Information
+                            </h3>
+                        </div>
+                        <div class="card-body" id="repoInfoContent">
+                            <!-- Repository info will be displayed here -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Loading -->
+                <section
+                    class="loading"
+                    id="loadingSection"
+                    style="display: none"
+                >
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div class="spinner"></div>
+                            <h3>Generating Report...</h3>
+                            <p>
+                                Analyzing GitHub activity and generating
+                                AI-powered insights
+                            </p>
+                            <div class="progress-steps">
+                                <div class="step active" id="step1">
+                                    <i class="fas fa-download"></i>
+                                    <span>Fetching GitHub Data</span>
+                                </div>
+                                <div class="step" id="step2">
+                                    <i class="fas fa-brain"></i>
+                                    <span>AI Analysis</span>
+                                </div>
+                                <div class="step" id="step3">
+                                    <i class="fas fa-file-alt"></i>
+                                    <span>Generating Report</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Results -->
+                <section
+                    class="results"
+                    id="resultsSection"
+                    style="display: none"
+                >
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-chart-bar"></i> Stand-Up Report
+                            </h3>
+                            <div class="card-actions">
+                                <button class="btn btn-outline" id="copyBtn">
+                                    <i class="fas fa-copy"></i>
+                                    Copy Report
+                                </button>
+                                <button
+                                    class="btn btn-outline"
+                                    id="downloadBtn"
+                                >
+                                    <i class="fas fa-download"></i>
+                                    Download
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="report-metadata" id="reportMetadata">
+                                <!-- Report metadata will be displayed here -->
+                            </div>
+                            <div class="report-content" id="reportContent">
+                                <!-- Generated report will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Error Display -->
+                <section
+                    class="error-section"
+                    id="errorSection"
+                    style="display: none"
+                >
+                    <div class="card error-card">
+                        <div class="card-header">
+                            <h3>
+                                <i class="fas fa-exclamation-triangle"></i>
+                                Error
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="error-content" id="errorContent">
+                                <!-- Error message will be displayed here -->
+                            </div>
+                            <div class="error-actions">
+                                <button class="btn btn-primary" id="retryBtn">
+                                    <i class="fas fa-redo"></i>
+                                    Try Again
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <p>
+                        &copy; 2025 Auto Stand-Up Report Generator. Built with
+                        ❤️ for developers.
+                    </p>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Documentation</a>
+                        <a href="#" class="footer-link">GitHub</a>
+                        <a href="#" class="footer-link">Support</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    </body>
+</html>

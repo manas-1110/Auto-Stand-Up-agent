@@ -191,7 +191,7 @@ def get_user_activity_report(owner: str, repo: str, username: str, since_days: i
 if __name__ == "__main__":
     # Demo configuration
     REPO_OWNER = 'manas-1110'
-    REPO_NAME = 'fighting_game'
+    REPO_NAME = 'Auto-Stand-Up-agent'
     TARGET_USER = 'manas-1110'
     SINCE_DAYS = 30
     
